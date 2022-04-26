@@ -12,6 +12,11 @@ export function remove(key) {
   window.localStorage.removeItem(key)
 }
 
+export function getLists() {
+  const lists = window.localStorage.getItem('lists')
+  return JSON.parse(lists) || []
+}
+
 export default {
-  save, get, remove
+  save, get, remove, getLists
 }

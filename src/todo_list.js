@@ -4,21 +4,32 @@ import storage from './local_storage'
 export default class TodoList {
   constructor(attributes = {}) {
     this.name = attributes.name || 'default'
-    this.todos = []
+    this.todos = attributes.todos || []
   }
 
   add(attributes) {
     this.todos.push(new Todo(attributes))
   }
 
-  save() {
-    storage.save(this.name, this)
+  // save() {
+  //   storage.save(this.name, this)
+  // }
+
+  static load() {
+    let lists = storage.getLists()
+  
+    if (lists.length === 0) {
+      return [ new TodoList() ]
+    } else {
+      return lists.map(list => {
+        list = new TodoList(list)
+        list.todos = list.todos.map(todo => new Todo(todo))
+        return list
+      })
+    }
   }
 
-  loadTodos() {
-    const todos = storage.get(this.name)
-    if (todos) {
-      todos.todos.forEach(this.add.bind(this))
-    }
+  static save(lists) {
+    storage.save('lists', lists)
   }
 }
