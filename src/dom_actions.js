@@ -1,12 +1,18 @@
 import TodoList from './todo_list';
 
 const listsContainer = document.querySelector('.lists')
-const lists = TodoList.load()
+let lists
 
 export const initLists = () => {
+  lists = TodoList.load()
   lists.forEach(list => {
+    while (listsContainer.firstChild) listsContainer.removeChild(listsContainer.firstChild);
     const ul = createListElement(list)
-    list.todos.forEach(todo => ul.appendChild(createTodoElement(todo)))
+    list.todos.forEach(todo => {
+      const todoElement = createTodoElement(todo)
+      todoElement.dataset.listName = list.name
+      ul.appendChild(todoElement)
+    })
     listsContainer.appendChild(ul)
   })
 }
@@ -22,13 +28,24 @@ const createListElement = list => {
 
 const createTodoElement = todo => {
   const element = document.createElement('li')
-  element.textContent = todo.title
+  const doneStatus = todo.isComplete ? 'is done' : 'is undone'
+  element.textContent = `${todo.title} - ${todo.description} - ${doneStatus}`
+  element.dataset.title = todo.title
+  element.addEventListener('click', toggleComplete)
   return element
+}
+
+const toggleComplete = event => {
+  const list = lists.find(l => l.name === event.target.dataset.listName)
+  const todo = list.findByTitle(event.target.dataset.title)
+  todo.toggleComplete()
+  TodoList.save(lists)
+  initLists()
 }
 
 const createElement = (type, text) => {
   const element = document.createElement(type)
-  element.textContent = text
+  element.textContent =  text
   return element
 }
 
@@ -37,7 +54,7 @@ const createTodoForm = () => {
   form.innerHTML = `
     title<input name="title"></input>
     description<input name="description"></input>
-    <button>submit</button>
+    <button>add todo</button>
   `;
   return form;
 }
@@ -50,7 +67,16 @@ const addTodo = event => {
     description: form.description.value
   }
   const list = lists.find(l => l.name === form.dataset.listName)
-  list.add(attributes)
+  list.addTodo(attributes)
   TodoList.save(lists)
-  form.reset()
+  initLists()
 }
+
+const resetLists = () => {
+  TodoList.resetLists()
+  initLists()
+}
+
+document
+  .querySelector('#resetLists')
+  .addEventListener('click', resetLists)

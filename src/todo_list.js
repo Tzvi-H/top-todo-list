@@ -3,17 +3,21 @@ import storage from './local_storage'
 
 export default class TodoList {
   constructor(attributes = {}) {
-    this.name = attributes.name || 'default'
+    this.name = attributes.name || 'default list'
     this.todos = attributes.todos || []
   }
 
-  add(attributes) {
+  addTodo(attributes) {
     this.todos.push(new Todo(attributes))
   }
 
-  // save() {
-  //   storage.save(this.name, this)
-  // }
+  findByTitle(title) {
+    return this.todos.find(t => t.title === title)
+  }
+
+  static resetLists() {
+    storage.save('lists', [new TodoList()])
+  }
 
   static load() {
     let lists = storage.getLists()

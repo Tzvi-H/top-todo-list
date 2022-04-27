@@ -4,14 +4,10 @@ export default class Todo {
     this.description = attributes.description
     this.dueDate = attributes.dueDate
     this.priority = attributes.priority
-    this.isComplete = false
+    this.isComplete = attributes.isComplete || false
   }
 
-  markAsComplete() {
-    this.isComplete = true
-  }
-
-  togglePriority() {
-    
+  toggleComplete() {
+    this.isComplete = !this.isComplete
   }
 }

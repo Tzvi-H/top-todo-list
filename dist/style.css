@@ -1,0 +1,7 @@
+ul {
+  font-weight: bold;
+}
+
+ul form, ul li {
+  font-weight: normal;
+}
