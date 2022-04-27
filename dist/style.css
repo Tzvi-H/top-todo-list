@@ -5,3 +5,7 @@ ul {
 ul form, ul li {
   font-weight: normal;
 }
+
+ul {
+  margin: 16px;
+}

@@ -4,9 +4,9 @@ const listsContainer = document.querySelector('.lists')
 let lists
 
 export const initLists = () => {
+  while (listsContainer.firstChild) listsContainer.removeChild(listsContainer.firstChild);
   lists = TodoList.load()
   lists.forEach(list => {
-    while (listsContainer.firstChild) listsContainer.removeChild(listsContainer.firstChild);
     const ul = createListElement(list)
     list.todos.forEach(todo => {
       const todoElement = createTodoElement(todo)
@@ -77,6 +77,18 @@ const resetLists = () => {
   initLists()
 }
 
+const addList = event => {
+  const input = document.querySelector('#addListName')
+  lists.push(new TodoList({name: input.value}))
+  input.value = ''
+  TodoList.save(lists)
+  initLists()
+}
+
 document
   .querySelector('#resetLists')
   .addEventListener('click', resetLists)
+
+document
+  .querySelector('#addList')
+  .addEventListener('click', addList)
